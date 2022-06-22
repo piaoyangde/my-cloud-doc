@@ -3,38 +3,53 @@ import React, { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' //从跟组件中引入
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons' //引入具体的图标
 
+import useKeyPress from '../hooks/userKeyPress'
+
 const FileSearch = ({ title, onFileSearch }) => {
 	// 输入被激活与否的状态
 	const [inputActive, setInputActive] = useState(false)
 	// 输入值的状态
 	const [value, setValue] = useState('')
 
+	const escKey = useKeyPress(27)
+	const enterKey = useKeyPress(13)
+
+	console.log('enterKey', enterKey)
+
 	// 写一个关闭方法
 	const closeSearch = (e) => {
-		e.preventDefault() //e 是传递的事件对象，阻止默认行为
+		e.preventDefault() //e 是传递的事件对象，阻止默认行为，在这里没有用，可以删除
 		setInputActive(false)
 		setValue('')
 	}
 	// 副作用 hook
 	useEffect(() => {
+		// 使用了自定义hook后，之前的代码就可以改为如下代码
+		if (enterKey.KeyPressed && inputActive) {
+			onFileSearch(value)
+			setValue('')
+		} else if (escKey.KeyPressed && inputActive) {
+			closeSearch(escKey.event)
+		}
+
 		// 在这里的event 并不是普通的参数，应该是保留的参数，具有特殊意义——系统事件对象
-		const handleInputEvent = (event) => {
-			const { keyCode } = event
-			if (keyCode === 13 && inputActive) {
-				//回车键+被激活，调用回调函数
-				onFileSearch(value)
-				// 回车键按下后，调用回调函数并传值，然后清空输入框的值，这样比较符合操作习惯
-				setValue('')
-			} else if (keyCode === 27 && inputActive) {
-				closeSearch(event)
-			}
-		}
-		// 添加到事件监听
-		document.addEventListener('keyup', handleInputEvent)
-		// 删除事件监听
-		return () => {
-			document.removeEventListener('keyup', handleInputEvent)
-		}
+		// const handleInputEvent = (event) => {
+		// 	const { keyCode } = event
+		// 	if (keyCode === 13 && inputActive) {
+		// 		//回车键+被激活，调用回调函数
+		// 		onFileSearch(value)
+		// 		// 回车键按下后，调用回调函数并传值，然后清空输入框的值，这样比较符合操作习惯
+		// 		setValue('')
+		// 	} else if (keyCode === 27 && inputActive) {
+		// 		closeSearch(event)
+		// 	}
+		// }
+		// // 添加到事件监听
+		// document.addEventListener('keyup', handleInputEvent)
+		// // 删除事件监听
+		// return () => {
+		// 	document.removeEventListener('keyup', handleInputEvent)
+		// }
 	})
 
 	// 添加一个useRef对象

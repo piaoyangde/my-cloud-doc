@@ -1,70 +1,53 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h1>开发日志</h1>
 
-## Available Scripts
+# 001- 搭建开发环境
 
-In the project directory, you can run:
 
-### `npm start`
+# 002- 开发第一个组件
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+# 003- 开发第一个自定义hook
+> 需求：判断是否按下了某键。思路：提供某键代码作为参数，如果按下的键代码等于参数，则该键的状态为TRUE，否则为FALSE。
 
-### `npm test`
+```js
+import { useState, useEffect } from 'react'
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+const useKeyPress = (targetKeyCode) => {
+	// 键是否被按下
+	const [KeyPressed, setKeyPressed] = useState(false)
+	// 如果某代码的键被按下，则该键的状态为ture
+	const keyDownHandler = ({ keyCode }) => {
+		if (keyCode === targetKeyCode) {
+			setKeyPressed(true)
+		}
+	}
+	// 当该键被放开时，设置该键的状态为FALSE
+	const keyUpHandler = ({ keyCode }) => {
+		if (keyCode === targetKeyCode) {
+			setKeyPressed(false)
+		}
+	}
 
-### `npm run build`
+	// 添加上述两个事件到监听
+	useEffect(() => {
+		document.addEventListener('keydown', keyDownHandler)
+		document.addEventListener('keyup', keyUpHandler)
+		// 清除副作用
+		return () => {
+			document.removeEventListener('keydown', keyDownHandler)
+			document.removeEventListener('keyup', keyUpHandler)
+		}
+	}, [])
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+	// 返回对键状态的判断
+	return KeyPressed
+}
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+export default useKeyPress
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
 
-### `npm run eject`
+在上述代码中，有两个事件——按下按钮与弹出按钮，按下时返回TRUE，弹开时返回FALSE，也就是说：在某个按键被按下的实际操作过程中，此自定义hook先返回了TRUE，然后又返回FALSE（状态的恢复），但在返回TRUE的时候，已经实现了判断按键被按下的目的。
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![20220622163027](http://cnd.qslawyer.work/vscode20220622163027.png)
