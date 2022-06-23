@@ -51,3 +51,7 @@ export default useKeyPress
 在上述代码中，有两个事件——按下按钮与弹出按钮，按下时返回TRUE，弹开时返回FALSE，也就是说：在某个按键被按下的实际操作过程中，此自定义hook先返回了TRUE，然后又返回FALSE（状态的恢复），但在返回TRUE的时候，已经实现了判断按键被按下的目的。
 
 ![20220622163027](http://cnd.qslawyer.work/vscode20220622163027.png)
+
+
+![20220622195726](http://cnd.qslawyer.work/vscode20220622195726.png)
+

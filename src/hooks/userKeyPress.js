@@ -3,20 +3,17 @@ import { useState, useEffect } from 'react'
 const useKeyPress = (targetKeyCode) => {
 	// 键是否被按下
 	const [KeyPressed, setKeyPressed] = useState(false)
-	const params = null
 
 	// 如果某代码的键被按下，则该键的状态为ture
-	const keyDownHandler = (event) => {
-		if (event.keyCode === targetKeyCode) {
+	const keyDownHandler = ({ keyCode }) => {
+		if (keyCode === targetKeyCode) {
 			setKeyPressed(true)
-			params = event
 		}
 	}
 	// 当该键被放开时，设置该键的状态为FALSE
-	const keyUpHandler = (event) => {
-		if (event.keyCode === targetKeyCode) {
+	const keyUpHandler = ({ keyCode }) => {
+		if (keyCode === targetKeyCode) {
 			setKeyPressed(false)
-			params = event
 		}
 	}
 
@@ -32,7 +29,7 @@ const useKeyPress = (targetKeyCode) => {
 	}, [])
 
 	// 返回对键状态的判断
-	return { KeyPressed, params }
+	return KeyPressed
 }
 
 export default useKeyPress
